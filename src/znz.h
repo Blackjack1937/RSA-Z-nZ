@@ -5,8 +5,10 @@
 typedef uint64_t Element;
 
 Element add(Element x, Element y, Element n);
-Element mul(Element x, Element y, Element n);
+// Element mul(Element x, Element y, Element n);
 Element neg(Element x, Element n);
+
+Element mul_mod64(Element x, Element y, Element n);
 
 
 int isInvertible(Element x, Element n);

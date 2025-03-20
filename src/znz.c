@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "znz.h"
 
-
 Element gcd(Element a, Element b) {
     while (b != 0) {
         Element temp = b;
@@ -10,10 +9,9 @@ Element gcd(Element a, Element b) {
     }
     return a;
 }
-
 static Element extended_gcd(Element a, Element b, long long *x, long long *y) {
     if (b == 0) {
-        *x = 1; 
+        *x = 1;
         *y = 0;
         return a;
     }
@@ -37,23 +35,12 @@ Element modular_inverse(Element a, Element m) {
     }
     return (Element)res;
 }
-
-
-
 Element add(Element x, Element y, Element n) {
     return (x + y) % n;
 }
-
-Element mul(Element x, Element y, Element n) {
-    return (x * y) % n;
-}
-
 Element neg(Element x, Element n) {
     return (n - x) % n;
 }
-
-
-
 int isInvertible(Element x, Element n) {
     return (gcd(x, n) == 1);
 }
@@ -65,17 +52,22 @@ Element invert(Element x, Element n) {
     return modular_inverse(x, n);
 }
 
+
+Element mul_mod64(Element x, Element y, Element n) {  //  changed mul to avoid overflow, needs testing
+    __uint128_t product = (__uint128_t)x * (__uint128_t)y;
+    return (Element)(product % n);
+}
+
 Element modexp(Element x, uint64_t k, Element n) {
     Element result = 1;
-    x %= n; //reduce once initially
+    x %= n; // reduce once initially
 
     while (k > 0) {
-        if (k & 1) {        //  if k is odd
-            result = (result * x) % n;
+        if (k & 1) {  // if k is odd
+            result = mul_mod64(result, x, n);
         }
-        k >>= 1;    // shift exponent right
-        x = (x * x) % n;
-
+        k >>= 1;
+        x = mul_mod64(x, x, n);
     }
     return result;
 }
