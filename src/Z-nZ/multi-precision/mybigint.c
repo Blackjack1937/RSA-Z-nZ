@@ -1,13 +1,13 @@
 #include "mybigint.h"
 #include <string.h>
 
-static void ensure_capacity(mpint_t *x, size_t needed) {
-    if (x->size < needed) {
-        x->data = realloc(x->data, needed * sizeof(uint32_t));
-        memset(x->data + x->size, 0, (needed - x->size) * sizeof(uint32_t));
-        x->size = needed;
-    }
-}
+// static void ensure_capacity(mpint_t *x, size_t needed) {
+//     if (x->size < needed) {
+//         x->data = realloc(x->data, needed * sizeof(uint32_t));
+//         memset(x->data + x->size, 0, (needed - x->size) * sizeof(uint32_t));
+//         x->size = needed;
+//     }
+// }
 
 static void normalize(mpint_t *x) {
     while (x->size > 1 && x->data[x->size - 1] == 0) {
@@ -124,6 +124,81 @@ void mpint_mul(mpint_t *r, const mpint_t *a, const mpint_t *b) {
     normalize(r);
 }
 
+void mpint_divmod(mpint_t *quot, mpint_t *rem,
+    const mpint_t *num, const mpint_t *den)
+{
+mpint_init(quot);
+mpint_copy(rem, num);
+
+// If rem < den => quotient=0, remainder=num
+if (mpint_cmp(rem, den) < 0) {
+return;
+}
+
+mpint_t one, tempDen;
+mpint_init(&one);
+mpint_init(&tempDen);
+mpint_from_uint64(&one, 1ULL);
+
+while (mpint_cmp(rem, den) >= 0) {
+mpint_copy(&tempDen, den);
+
+mpint_t multiple;
+mpint_init(&multiple);
+mpint_copy(&multiple, &one);
+
+while (1) {
+mpint_t temp2;
+mpint_init(&temp2);
+mpint_add(&temp2, &tempDen, &tempDen);
+
+if (mpint_cmp(&temp2, rem) > 0) {
+  mpint_free(&temp2);
+  break;
+}
+
+mpint_free(&tempDen);
+mpint_init(&tempDen);
+mpint_copy(&tempDen, &temp2);
+mpint_free(&temp2);
+
+mpint_t mul2;
+mpint_init(&mul2);
+mpint_add(&mul2, &multiple, &multiple);
+
+mpint_free(&multiple);
+mpint_init(&multiple);
+mpint_copy(&multiple, &mul2);
+mpint_free(&mul2);
+}
+
+// Subtract tempDen from rem
+mpint_t newRem;
+mpint_init(&newRem);
+mpint_sub(&newRem, rem, &tempDen);
+
+mpint_free(rem);
+mpint_init(rem);
+mpint_copy(rem, &newRem);
+mpint_free(&newRem);
+
+// Add multiple to quotient
+mpint_t newQuot;
+mpint_init(&newQuot);
+mpint_add(&newQuot, quot, &multiple);
+
+mpint_free(quot);
+mpint_init(quot);
+mpint_copy(quot, &newQuot);
+mpint_free(&newQuot);
+
+mpint_free(&multiple);
+mpint_free(&tempDen);
+}
+
+mpint_free(&one);
+}
+
 
 void mpint_mod(mpint_t *r, const mpint_t *x, const mpint_t *m) {
     mpint_t q, tmp;
@@ -136,4 +211,5 @@ void mpint_mod(mpint_t *r, const mpint_t *x, const mpint_t *m) {
     mpint_free(&q);
     mpint_free(&tmp);
 }
+
 

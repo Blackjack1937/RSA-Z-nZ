@@ -23,7 +23,7 @@ int  mpint_cmp(const mpint_t *a, const mpint_t *b);     //   compare a,b
 void mpint_add(mpint_t *r, const mpint_t *a, const mpint_t *b);
 void mpint_sub(mpint_t *r, const mpint_t *a, const mpint_t *b); //assume a >= b
 void mpint_mul(mpint_t *r, const mpint_t *a, const mpint_t *b);
-// void mpint_divmod(mpint_t *quot, mpint_t *rem, const mpint_t *num, const mpint_t *den); 
+void mpint_divmod(mpint_t *quot, mpint_t *rem, const mpint_t *num, const mpint_t *den); 
 void mpint_mod(mpint_t *r, const mpint_t *x, const mpint_t *m);
 
 
