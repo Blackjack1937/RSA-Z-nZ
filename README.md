@@ -2,9 +2,9 @@
 
 This project includes:
 
-- 64-bit \(\mathbb{Z}/n\mathbb{Z}\) arithmetic and RSA
+- 64-bit arithmetic and RSA
 - Multi-precision big integers
-- Galois Field \(\mathbf{F}_{128}\) (polynomial and Zech-log)
+- Galois Field F_128 (polynomial and Zech-log)
 
 ## Build and Run
 
