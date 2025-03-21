@@ -6,6 +6,10 @@ This project includes:
 - Multi-precision big integers
 - Galois Field F_128 (polynomial and Zech-log)
 
+## Homework answers
+
+The answers are available in the **M1AAC_RIDAOUI.pdf**  file.
+
 ## Build and Run
 
 1. **Compile**:
